@@ -2,4 +2,6 @@
 - 前端：Vue 3 + Element Plus + Vite
 - 后端：Spring Boot 3 + MyBatis-Plus + JWT
 - 功能：登录认证、报销管理、发票管理、审批流程、预算控制、人员管理
-- 数据库：MySQL + 9张核心表"
+- 数据库：MySQL
+
+除了标有前端代码的文件为前端代码，其余均为后端代码
