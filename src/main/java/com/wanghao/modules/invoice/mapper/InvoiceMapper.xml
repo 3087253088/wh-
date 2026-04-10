@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanghao.modules.invoice.mapper.InvoiceMapper">
+
+    <!-- 分页查询所有发票（关联用户信息） -->
+    <select id="selectAllWithUser" resultType="java.util.HashMap">
+        SELECT i.*, u.name as userName
+        FROM smart_finance.invoice i
+        LEFT JOIN smart_finance.sys_user u ON i.user_id = u.id
+        <where>
+            <if test="invoiceCode != null and invoiceCode != ''">
+                AND i.invoice_code LIKE CONCAT('%', #{invoiceCode}, '%')
+            </if>
+            <if test="drawer != null and drawer != ''">
+                AND i.drawer LIKE CONCAT('%', #{drawer}, '%')
+            </if>
+            <if test="verifyStatus != null and verifyStatus != ''">
+                AND i.verify_status = #{verifyStatus}
+            </if>
+            <if test="userName != null and userName != ''">
+                AND u.name LIKE CONCAT('%', #{userName}, '%')
+            </if>
+        </where>
+        ORDER BY i.create_time DESC
+    </select>
+
+    <!-- 统计所有发票数量 -->
+    <select id="countAllWithUser" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM smart_finance.invoice i
+        LEFT JOIN smart_finance.sys_user u ON i.user_id = u.id
+        <where>
+            <if test="invoiceCode != null and invoiceCode != ''">
+                AND i.invoice_code LIKE CONCAT('%', #{invoiceCode}, '%')
+            </if>
+            <if test="drawer != null and drawer != ''">
+                AND i.drawer LIKE CONCAT('%', #{drawer}, '%')
+            </if>
+            <if test="verifyStatus != null and verifyStatus != ''">
+                AND i.verify_status = #{verifyStatus}
+            </if>
+            <if test="userName != null and userName != ''">
+                AND u.name LIKE CONCAT('%', #{userName}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

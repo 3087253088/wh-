@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanghao.modules.expense.mapper.ExpenseClaimMapper">
+
+    <!--suppress SqlResolve -->
+    <select id="selectListByCondition" resultType="com.wanghao.modules.expense.entity.ExpenseClaim">
+        SELECT * FROM smart_finance.expense_claim
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="query.title != null and query.title != ''">
+                AND title LIKE CONCAT('%', #{query.title}, '%')
+            </if>
+            <if test="query.status != null and query.status != ''">
+                AND status = #{query.status}
+            </if>
+            <if test="query.startDate != null">
+                AND expense_date >= #{query.startDate}
+            </if>
+            <if test="query.endDate != null">
+                AND expense_date &lt;= #{query.endDate}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+        LIMIT #{query.pageSize} OFFSET #{query.offset}
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM smart_finance.expense_claim
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="query.title != null and query.title != ''">
+                AND title LIKE CONCAT('%', #{query.title}, '%')
+            </if>
+            <if test="query.status != null and query.status != ''">
+                AND status = #{query.status}
+            </if>
+            <if test="query.startDate != null">
+                AND expense_date >= #{query.startDate}
+            </if>
+            <if test="query.endDate != null">
+                AND expense_date &lt;= #{query.endDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPendingList" resultType="com.wanghao.modules.expense.entity.ExpenseClaim">
+        SELECT ec.*, u.name as userName, d.dept_name as deptName
+        FROM smart_finance.expense_claim ec
+        LEFT JOIN smart_finance.sys_user u ON ec.user_id = u.id
+        LEFT JOIN smart_finance.sys_dept d ON ec.dept_id = d.id
+        <where>
+            ec.status = 'pending'
+            <if test="approverId != null">
+                AND ec.current_approver_id = #{approverId}
+            </if>
+        </where>
+        ORDER BY ec.submit_time ASC
+    </select>
+</mapper>
